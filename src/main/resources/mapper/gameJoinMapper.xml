@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "https://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.app.webnest.mapper.GameJoinMapper">
+    <!--  게임방에 접속한 유저관련 Mapper  -->
+
+    <!-- 방에 있는 모든 유저 조회 -->
+    <select id="selectAll" parameterType="Long" resultType="GameJoinDTO">
+        SELECT
+        TBGJ.ID, TBGJ.GAME_JOIN_IS_HOST, TBGJ.USER_ID, TBGJ.GAME_ROOM_ID, TBGJ.GAME_JOIN_CREATE_AT,
+        TBU.USER_NAME, TBU.USER_BIRTHDAY, TBU.USER_EMAIL, TBU.USER_PHONE, TBU.USER_EXP, TBU.USER_THUMBNAIL_NAME, TBU.USER_THUMBNAIL_URL, TBU.USER_NICKNAME
+        FROM TBL_GAME_JOIN TBGJ
+        JOIN TBL_USER TBU
+        ON TBGJ.USER_ID = TBU.ID AND TBGJ.GAME_ROOM_ID = #{gameRoomId}
+    </select>
+</mapper>

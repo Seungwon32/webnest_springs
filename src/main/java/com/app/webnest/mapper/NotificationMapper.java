@@ -39,7 +39,7 @@ public interface NotificationMapper {
     public void deleteCommentNotification(Long id);
     public void deleteFollowNotification(Long id);
 
-    public void deleteAllPostsNotification(Long receiverUserId);
-    public void deleteAllCommentsNotification(Long receiverUserId);
-    public void deleteAllFollowNotification(Long receiverUserId);
+    public void deleteAllPostNotificationByUserId(Long receiverUserId);
+    public void deleteAllCommentNotificationByUserId(Long receiverUserId);
+    public void deleteAllFollowNotificationByUserId(Long receiverUserId);
 }

@@ -19,5 +19,7 @@ public interface GameJoinMapper {
     // 플레이어 게임 종료
     public void delete(GameJoinVO gameJoinVO);
 
+    public void update(GameJoinVO gameJoinVO);
+
     public Optional<GameJoinVO> selectGameUserByUserIdAndGameRoom(GameJoinVO gameJoinVO);
 }

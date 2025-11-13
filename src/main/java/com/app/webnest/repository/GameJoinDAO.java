@@ -32,6 +32,8 @@ public class GameJoinDAO {
         gameJoinMapper.delete(gameJoinVO);
     }
 
+    public void update(GameJoinVO gameJoinVO){gameJoinMapper.update(gameJoinVO);}
+
     public Optional<GameJoinVO> findUserInGameRoom(GameJoinVO gameJoinVO) {
         return gameJoinMapper.selectGameUserByUserIdAndGameRoom(gameJoinVO);
     }

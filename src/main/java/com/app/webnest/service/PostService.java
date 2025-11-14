@@ -9,10 +9,10 @@ import java.util.Map;
 
 public interface PostService {
     // 상세 페이지 조회
-    public PostResponseDTO getPost(Long id);
+    public PostResponseDTO getPost(Long id, Long userId);
 
     //조회수 증가 안함 상세조회
-    PostResponseDTO getPostWithoutView(Long id);
+    PostResponseDTO getPostWithoutView(Long id, Long userId);
 
 
 
@@ -31,6 +31,8 @@ public interface PostService {
    // 게시글 추가
     public Map<String, Long> write(PostVO postVO);
 
+
+    public Map<String, Object> togglePostLike(Long postId, Long userId);
 
 
 

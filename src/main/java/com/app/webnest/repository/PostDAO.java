@@ -6,7 +6,9 @@ import com.app.webnest.mapper.PostMapper;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Repository;
 
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 
 @Repository
@@ -52,10 +54,36 @@ public class PostDAO {
         postMapper.updatePostViewCount(id);
     }
 
-    //좋아요
+
+
+
+    /// ggggggggggggggggggggggg
+
+    public boolean isPostLiked(Long postId, Long userId) {
+        Map<String, Long> map = new HashMap<>();
+        map.put("postId", postId);
+        map.put("userId", userId);
+        return postMapper.isPostLiked(map) > 0;
+    }
+
+    public void addPostLike(Long postId, Long userId) {
+        Map<String, Long> map = new HashMap<>();
+        map.put("postId", postId);
+        map.put("userId", userId);
+        postMapper.insertLike(map);
+    }
+
+    public void removePostLike(Long postId, Long userId) {
+        Map<String, Long> map = new HashMap<>();
+        map.put("postId", postId);
+        map.put("userId", userId);
+        postMapper.deleteLike(map);
+    }
+
     public int getPostLikeCount(Long postId) {
         return postMapper.selectPostLikeCount(postId);
     }
+
 
 
 

@@ -24,13 +24,8 @@ public class PostServiceImpl implements PostService {
 
     private final PostDAO postDAO;
 
-//    @Override
-//    public PostResponseDTO getPost(Long id) {
-//        postDAO.updateReadCount(id);
-//        return postDAO.findPost(id).orElseThrow(()-> new PostException("Post Not Found"));
-//    }
     @Override
-    public PostResponseDTO getPost(Long id) {
+    public PostResponseDTO getPost(Long id, Long userId) {
         postDAO.updateReadCount(id);
         PostResponseDTO post = postDAO.findPost(id)
                 .orElseThrow(() -> new PostException("Post Not Found"));
@@ -38,26 +33,40 @@ public class PostServiceImpl implements PostService {
         int likeCount = postDAO.getPostLikeCount(id);
         post.setPostLikeCount(likeCount);
 
+        // 🔥 로그인 유저가 좋아요 눌렀는지 여부
+        boolean liked = postDAO.isPostLiked(id, userId);
+        post.setLiked(liked);   // DTO에 넣어주기
+
         return post;
     }
 
 
-    //조회수 증가안함
+
 //    @Override
 //    public PostResponseDTO getPostWithoutView(Long id) {
-//        return postDAO.findPost(id).orElseThrow(() -> new PostException("Post Not Found"));
+//        PostResponseDTO post = postDAO.findPost(id)
+//                .orElseThrow(() -> new PostException("Post Not Found"));
+//
+//        int likeCount = postDAO.getPostLikeCount(id);
+//        post.setPostLikeCount(likeCount);
+//
+//        return post;
 //    }
-
     @Override
-    public PostResponseDTO getPostWithoutView(Long id) {
+    public PostResponseDTO getPostWithoutView(Long id, Long userId) {
+
         PostResponseDTO post = postDAO.findPost(id)
                 .orElseThrow(() -> new PostException("Post Not Found"));
 
         int likeCount = postDAO.getPostLikeCount(id);
         post.setPostLikeCount(likeCount);
 
+        boolean liked = postDAO.isPostLiked(id, userId);
+        post.setLiked(liked);
+
         return post;
     }
+
 
 
 
@@ -97,5 +106,30 @@ public class PostServiceImpl implements PostService {
         return response;
     }
 
+
+
+
+
+
+    /// //////
+    @Override
+    public Map<String, Object> togglePostLike(Long postId, Long userId) {
+
+        boolean isLiked = postDAO.isPostLiked(postId, userId);
+
+        if (isLiked) {
+            postDAO.removePostLike(postId, userId);
+        } else {
+            postDAO.addPostLike(postId, userId);
+        }
+
+        int likeCount = postDAO.getPostLikeCount(postId);
+
+        Map<String, Object> result = new HashMap<>();
+        result.put("liked", !isLiked);
+        result.put("likeCount", likeCount);
+
+        return result;
+    }
 
 }

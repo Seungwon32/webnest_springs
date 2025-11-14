@@ -5,6 +5,9 @@ import com.app.webnest.domain.dto.CommentNotificationDTO;
 import com.app.webnest.domain.dto.FollowNotificationDTO;
 import com.app.webnest.domain.dto.NotificationResponseDTO;
 import com.app.webnest.domain.dto.PostNotificationDTO;
+import com.app.webnest.domain.vo.CommentNotificationVO;
+import com.app.webnest.domain.vo.FollowNotificationVO;
+import com.app.webnest.domain.vo.PostNotificationVO;
 import com.app.webnest.service.NotificationServiceImpl;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
@@ -34,6 +37,24 @@ public class NotificationApi {
 
         return ResponseEntity.status(HttpStatus.OK).body(ApiResponseDTO.of("newNotifications", result));
     }
+
+    @PostMapping("post/insert")
+    public ResponseEntity<ApiResponseDTO> insertPostNotification(@RequestBody PostNotificationVO postNotificationVO){
+        notificationService.addPostNotification(postNotificationVO);
+        return ResponseEntity.status(HttpStatus.OK).body(ApiResponseDTO.of("complete insert post notification"));
+    }
+
+    @PostMapping("comment/insert")
+    public ResponseEntity<ApiResponseDTO> insertCommentNotification(@RequestBody CommentNotificationVO commentNotificationVO){
+        notificationService.addCommentNotification(commentNotificationVO);
+        return ResponseEntity.status(HttpStatus.OK).body(ApiResponseDTO.of("complete insert comment notification"));
+    }
+
+    @PostMapping("follow/insert")
+    public ResponseEntity<ApiResponseDTO> insertFollowNotification(@RequestBody FollowNotificationVO followNotificationVO){
+        notificationService.addFollowNotification(followNotificationVO);
+        return ResponseEntity.status(HttpStatus.OK).body(ApiResponseDTO.of("complete insert follow notification"));
+    }
     @PutMapping("/post/modify")
     public ResponseEntity<ApiResponseDTO> modifyPostNotification(@RequestBody Long id){
         notificationService.modifyPostNotification(id);
@@ -49,12 +70,12 @@ public class NotificationApi {
         notificationService.modifyFollowNotification(id);
         return ResponseEntity.status(HttpStatus.OK).body(ApiResponseDTO.of("completed read one follow notification"));
     }
-    
-    @PutMapping("modify-all")
-    public ResponseEntity<ApiResponseDTO> modifyAllNotification(@RequestBody Long receiverUserId){
+
+    @PutMapping("modify-all/{receiverUserId}")
+    public ResponseEntity<ApiResponseDTO> modifyAllNotification(@PathVariable Long receiverUserId){
         notificationService.modifyEveryCommentNotification(receiverUserId);
         notificationService.modifyEveryFollowNotification(receiverUserId);
-        notificationService.removeEveryPostNotification(receiverUserId);
+        notificationService.modifyEveryPostNotification(receiverUserId);
         return ResponseEntity.status(HttpStatus.OK).body(ApiResponseDTO.of("complete read all"));
     }
 
@@ -74,8 +95,8 @@ public class NotificationApi {
         return ResponseEntity.status(HttpStatus.OK).body(ApiResponseDTO.of("complete remove follow notification"));
     }
 
-    @DeleteMapping("delete-all")
-    public ResponseEntity<ApiResponseDTO> deleteAllNotification(@RequestBody Long receiverUserId){
+    @DeleteMapping("delete-all/{receiverUserId}")
+    public ResponseEntity<ApiResponseDTO> deleteAllNotification(@PathVariable Long receiverUserId){
         notificationService.removeEveryPostNotification(receiverUserId);
         notificationService.removeEveryFollowNotification(receiverUserId);
         notificationService.removeEveryCommentNotification(receiverUserId);

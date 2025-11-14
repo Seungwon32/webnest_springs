@@ -3,6 +3,9 @@ package com.app.webnest.service;
 import com.app.webnest.domain.dto.CommentNotificationDTO;
 import com.app.webnest.domain.dto.FollowNotificationDTO;
 import com.app.webnest.domain.dto.PostNotificationDTO;
+import com.app.webnest.domain.vo.CommentNotificationVO;
+import com.app.webnest.domain.vo.FollowNotificationVO;
+import com.app.webnest.domain.vo.PostNotificationVO;
 import com.app.webnest.repository.NotificationDAO;
 import lombok.AllArgsConstructor;
 import lombok.NoArgsConstructor;
@@ -46,6 +49,21 @@ public class NotificationServiceImpl implements NotificationService {
     }
 
     @Override
+    public void addPostNotification(PostNotificationVO postNotificationVO) {
+        notificationDAO.savePostNotification(postNotificationVO);
+    }
+
+    @Override
+    public void addCommentNotification(CommentNotificationVO commentNotificationVO) {
+        notificationDAO.saveCommentNotification(commentNotificationVO);
+    }
+
+    @Override
+    public void addFollowNotification(FollowNotificationVO followNotificationVO) {
+        notificationDAO.saveFollowNotification(followNotificationVO);
+    }
+
+    @Override
     public void modifyPostNotification(Long id) {
         notificationDAO.modifyPostNotification(id);
     }
@@ -62,17 +80,17 @@ public class NotificationServiceImpl implements NotificationService {
 
     @Override
     public void modifyEveryPostNotification(Long receiverUserId) {
-        notificationDAO.modifyPostNotification(receiverUserId);
+        notificationDAO.modifyEveryPostsNotification(receiverUserId);
     }
 
     @Override
     public void modifyEveryFollowNotification(Long receiverUserId) {
-        notificationDAO.modifyFollowNotification(receiverUserId);
+        notificationDAO.modifyEveryFollowNotification(receiverUserId);
     }
 
     @Override
     public void modifyEveryCommentNotification(Long receiverUserId) {
-        notificationDAO.modifyCommentNotification(receiverUserId);
+        notificationDAO.modifyEveryCommentsNotification(receiverUserId);
     }
 
     @Override
@@ -92,16 +110,16 @@ public class NotificationServiceImpl implements NotificationService {
 
     @Override
     public void removeEveryPostNotification(Long receiverUserId) {
-        notificationDAO.removePostNotification(receiverUserId);
+        notificationDAO.removeEveryPostsNotification(receiverUserId);
     }
 
     @Override
     public void removeEveryFollowNotification(Long receiverUserId) {
-        notificationDAO.removeFollowNotification(receiverUserId);
+        notificationDAO.removeEveryFollowNotification(receiverUserId);
     }
 
     @Override
     public void removeEveryCommentNotification(Long receiverUserId) {
-        notificationDAO.removeCommentNotification(receiverUserId);
+        notificationDAO.removeEveryCommentsNotification(receiverUserId);
     }
 }

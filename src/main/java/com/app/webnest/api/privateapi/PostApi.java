@@ -33,12 +33,7 @@ public class PostApi {
         return postService.getOpenPosts();
     }
 
-    // 문제둥지 전체 조회
-//    @GetMapping("/question")
-//    public List<PostResponseDTO> getQuestionPosts() {
-//        return postService.getQuestionPosts();
-//
-//    }
+
     // 문제둥지 전체 조회
     @GetMapping("/question")
     public List<PostResponseDTO> getQuestionPosts() {
@@ -84,17 +79,17 @@ public class PostApi {
                 .body(ApiResponseDTO.of("조회수 증가 없이 조회", post));
     }
 
-    // 마이페이지 - 열린둥지 전체
-    @GetMapping("/users/{userId}/open")
-    public List<PostResponseDTO> getMyOpenPosts(@PathVariable Long userId){
-        return postService.getOpenPostsByUserId(userId);
-    }
-
-    // 마이페이지 - 문제둥지 전체
-    @GetMapping("/users/{userId}/question")
-    public List<PostResponseDTO> getMyQuestionPosts(@PathVariable Long userId){
-        return postService.getQuestionPostsByUserId(userId);
-    }
+//    // 마이페이지 - 열린둥지 전체
+//    @GetMapping("/users/{userId}/open")
+//    public List<PostResponseDTO> getMyOpenPosts(@PathVariable Long userId){
+//        return postService.getOpenPostsByUserId(userId);
+//    }
+//
+//    // 마이페이지 - 문제둥지 전체
+//    @GetMapping("/users/{userId}/question")
+//    public List<PostResponseDTO> getMyQuestionPosts(@PathVariable Long userId){
+//        return postService.getQuestionPostsByUserId(userId);
+//    }
 
 //    @PutMapping("modify")
 //    public ResponseEntity<ApiResponseDTO> updatePost(@RequestBody PostVO postVO) {

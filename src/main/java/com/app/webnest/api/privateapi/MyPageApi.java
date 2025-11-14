@@ -17,13 +17,13 @@ import java.util.List;
 @RestController
 @RequiredArgsConstructor
 @Slf4j
-@RequestMapping("/private/my-page/*")
+@RequestMapping("/private/my-page")
 public class MyPageApi {
 
     private final PostService postService;
     private final UserService userService;
 
-    @PostMapping("private-test")
+    @PostMapping("/private-test")
     public void privateTest(Authentication authentication){
         log.info(authentication.getPrincipal().toString());
     }
@@ -31,13 +31,14 @@ public class MyPageApi {
 
 
 
+
     // 마이페이지 - 열린둥지 전체 ( 내가 쓴 )
-    @PostMapping("{userId}/open")
+    @PostMapping("/users/{userId}/open")
     public List<PostResponseDTO> getMyOpenPosts(@PathVariable Long userId){
         return postService.getOpenPostsByUserId(userId);
     }
     // 마이페이지 - 문제둥지 전체 ( 내가 쓴 )
-    @PostMapping("{userId}/question")
+    @PostMapping("/users/{userId}/question")
     public List<PostResponseDTO> getMyQuestionPosts(@PathVariable Long userId){
         return postService.getQuestionPostsByUserId(userId);
     }

@@ -1,5 +1,6 @@
 package com.app.webnest.mapper;
 
+import com.app.webnest.domain.dto.QuizMyPageDTO;
 import com.app.webnest.domain.dto.QuizPersonalDTO;
 import com.app.webnest.domain.dto.QuizPersonalResponseDTO;
 import com.app.webnest.domain.dto.QuizResponseDTO;
@@ -65,5 +66,9 @@ public interface QuizMapper {
 //    채점 후 정답이면 정답여부 업데이트
     public void updateSubmitResult(QuizResponseDTO quizResponseDTO);
 
+//    마이페이지 내가 푼 문제들
+    public List<QuizMyPageDTO> selectQuizIsSolveMyData(Long id);
+
+    public List<QuizMyPageDTO> selectQuizIsSolveForLanguageMyData(Long id);
 
 }

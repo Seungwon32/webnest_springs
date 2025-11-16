@@ -205,4 +205,36 @@
         SET QUIZ_SUBMIT_RESULT = QUIZ_SUBMIT_RESULT + 1
         WHERE USER_ID = #{userId} AND QUIZ_ID = #{quizId}
     </update>
+
+
+<!--                         마이페이지용 XML                       -->
+    <select id="selectQuizIsSolveMyData" parameterType="Long" resultType="QuizMyPageDTO">
+        SELECT
+            TBQ.QUIZ_TITLE as quizTitle,
+            TBQ.QUIZ_DESCRIPTION as quizDescription,
+            TBQ.QUIZ_CATEGORY as quizCategory,
+            TBQ.QUIZ_EXPECTATION as quizExpectation,
+            TBQ.QUIZ_EXP as quizExp,
+            TBQ.QUIZ_DIFFICULT as quizDifficult,
+            TBQ.QUIZ_LANGUAGE as quizLanguage,
+            TBP.USER_ID as userId
+        FROM TBL_QUIZ_PERSONAL TBP
+        JOIN TBL_USER TBU
+            ON TBP.USER_ID = TBU.ID
+        JOIN TBL_QUIZ TBQ
+            ON TBP.QUIZ_ID = TBQ.ID AND TBU.ID = TBP.USER_ID
+        WHERE TBP.QUIZ_PERSONAL_IS_SOLVE > 0 AND TBU.ID = #{id}
+    </select>
+
+    <select id="selectQuizIsSolveForLanguageMyData" parameterType="Long" resultType="QuizMyPageDTO">
+        SELECT
+            TBQ.QUIZ_LANGUAGE as quizLanguage,
+            TBP.USER_ID as userId
+        FROM TBL_QUIZ_PERSONAL TBP
+        JOIN TBL_QUIZ TBQ
+            ON TBP.QUIZ_ID = TBQ.ID
+        JOIN TBL_USER TBU
+            ON TBP.QUIZ_ID = TBQ.ID AND TBU.ID = TBP.USER_ID
+        WHERE TBP.QUIZ_PERSONAL_IS_SOLVE > 0 AND TBU.ID = #{id}
+    </select>
 </mapper>

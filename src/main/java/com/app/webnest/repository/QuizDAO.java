@@ -1,5 +1,6 @@
 package com.app.webnest.repository;
 
+import com.app.webnest.domain.dto.QuizMyPageDTO;
 import com.app.webnest.domain.dto.QuizPersonalDTO;
 import com.app.webnest.domain.dto.QuizPersonalResponseDTO;
 import com.app.webnest.domain.dto.QuizResponseDTO;
@@ -71,4 +72,10 @@ public class QuizDAO {
 
     //    채점 후 정답이면 정답여부 업데이트
     public void updateBySubmitResult(QuizResponseDTO quizResponseDTO) { quizMapper.updateSubmitResult(quizResponseDTO); }
+
+//    마이페이지 내가 푼 문제
+    public List<QuizMyPageDTO> selectByIdQuizIsSolveMyData(Long id){ return quizMapper.selectQuizIsSolveMyData(id);}
+
+//    마이페이지 내가 푼 문제의 언어들
+    public List<QuizMyPageDTO> selectByIdQuizIsSolveForLanguageMyData(Long id){ return quizMapper.selectQuizIsSolveForLanguageMyData(id);}
 }

@@ -30,6 +30,7 @@ public interface QuizMapper {
 //    결과값 응답
     public String selectExpectation(Long quizId);
 
+//    페이징, 필터링, 북마크, 해결여부 한번에 반환
     public List<QuizPersonalDTO> selectQuizWithPersonal(HashMap<String, Object> params);
 
 //    퀴즈JOIN 정보
@@ -47,7 +48,7 @@ public interface QuizMapper {
     public Integer updateIsBookmark(QuizResponseDTO  quizResponseDTO);
 
 //    해당퀴즈 해결여부업데이트
-    public Integer updateIsSolve(QuizResponseDTO   quizResponseDTO);
+    public boolean updateIsSolve(QuizResponseDTO   quizResponseDTO);
 
 //    회원탈퇴시 데이터삭제
     public void delete(Long id);

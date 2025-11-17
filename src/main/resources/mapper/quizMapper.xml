@@ -134,7 +134,7 @@
     <!--    문제 해결 여부 반환-->
     <update id="updateIsSolve" parameterType="QuizResponseDTO">
         UPDATE TBL_QUIZ_PERSONAL
-        SET QUIZ_PERSONAL_IS_SOLVE = QUIZ_PERSONAL_IS_SOLVE + 1
+        SET QUIZ_PERSONAL_IS_SOLVE = CASE WHEN QUIZ_PERSONAL_IS_SOLVE = 1 THEN 1 ELSE 1 END
         WHERE QUIZ_ID = #{quizId} AND USER_ID = #{userId}
     </update>
 

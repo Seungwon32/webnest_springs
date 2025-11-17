@@ -25,6 +25,7 @@ public class QuizDAO {
         return quizMapper.selectAllFilter(params);
     }
 
+
     public List<QuizPersonalDTO> selectQuizWithPersonal(HashMap<String, Object> params){ return quizMapper.selectQuizWithPersonal(params); }
 
 //    전체 문제리스트
@@ -45,17 +46,19 @@ public class QuizDAO {
     //    해당퀴즈에 대한 personal정보
     public Long  selectQuizPersonalById(QuizResponseDTO quizResponseDTO) { return quizMapper.selectQuizPersonalById(quizResponseDTO); }
 
+
     public QuizPersonalVO selectAllQuizPersonalById(Long id)  { return quizMapper.selectAllQuizPersonalById(id); }
 
     //    퀴즈 풀었던 내역저장
     public void insertQuizPersonal(QuizPersonalVO quizPersonalVO) { quizMapper.insert(quizPersonalVO); }
 
-//    해당퀴즈 북마크여부
+//    북마크여부 업데이트
     public Integer updateIsBookmark(QuizResponseDTO quizResponseDTO){ return quizMapper.updateIsBookmark(quizResponseDTO); }
 
-//    해당퀴즈 해결여부
-    public Integer updateIsSolve(QuizResponseDTO quizResponseDTO){ return quizMapper.updateIsSolve(quizResponseDTO); }
+//    해결여부 업데이트
+    public boolean updateIsSolve(QuizResponseDTO quizResponseDTO){ return quizMapper.updateIsSolve(quizResponseDTO); }
 
+//    북마크, 해결목록 목록 반환
     public List<QuizPersonalResponseDTO> selectByBookmarkIsSolve(Long userId){ return quizMapper.selectByBookmarkIsSolve(userId);}
 
 //    회원탈퇴시 데이터삭제
@@ -72,6 +75,7 @@ public class QuizDAO {
 
     //    채점 후 정답이면 정답여부 업데이트
     public void updateBySubmitResult(QuizResponseDTO quizResponseDTO) { quizMapper.updateSubmitResult(quizResponseDTO); }
+
 
 //    마이페이지 내가 푼 문제
     public List<QuizMyPageDTO> selectByIdQuizIsSolveMyData(Long id){ return quizMapper.selectQuizIsSolveMyData(id);}

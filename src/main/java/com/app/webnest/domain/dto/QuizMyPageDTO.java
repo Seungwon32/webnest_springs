@@ -8,6 +8,7 @@ import lombok.*;
 @ToString
 @EqualsAndHashCode( of = "id")
 public class QuizMyPageDTO {
+    private Long id;
     private String quizTitle;
     private String quizDescription;
     private String quizCategory;

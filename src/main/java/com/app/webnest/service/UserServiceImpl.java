@@ -186,7 +186,11 @@ public class UserServiceImpl implements UserService {
 
         // 문제
 //        quizDAO
-        //List<QuizResponseDTO> quizResponseDTOList = quizDAO.selectByQuizSubmitAll(id);
+       List<QuizMyPageDTO> quizMyPage = quizDAO.selectByIdQuizIsSolveMyData(id);
+
+       // 등급에서 문제별 진도 상황
+        List<QuizMyPageDTO> quizMyPageLanguage = quizDAO.selectByIdQuizIsSolveForLanguageMyData(id);
+
         // 팔로워
         List<FollowDTO> followers = followDAO.findFollowersByUserId(id);
 
@@ -200,6 +204,8 @@ public class UserServiceImpl implements UserService {
         myDatas.put("questionLikePosts", questionLikePosts);
         myDatas.put("followers", followers);
         myDatas.put("following", following);
+        myDatas.put("quizMyPage", quizMyPage);
+        myDatas.put("quizMyPageLanguage", quizMyPageLanguage);
 
         return myDatas;
     }

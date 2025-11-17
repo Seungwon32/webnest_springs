@@ -74,8 +74,8 @@ public class QuizDAO {
     public void updateBySubmitResult(QuizResponseDTO quizResponseDTO) { quizMapper.updateSubmitResult(quizResponseDTO); }
 
 //    마이페이지 내가 푼 문제
-    public List<QuizMyPageDTO> selectByIdQuizIsSolveMyData(Long id){ return quizMapper.selectQuizIsSolveMyData(id);}
+    public List<QuizMyPageDTO> selectByIdQuizIsSolveMyData(Long userId){ return quizMapper.selectQuizIsSolveMyData(userId);}
 
 //    마이페이지 내가 푼 문제의 언어들
-    public List<QuizMyPageDTO> selectByIdQuizIsSolveForLanguageMyData(Long id){ return quizMapper.selectQuizIsSolveForLanguageMyData(id);}
+    public List<QuizMyPageDTO> selectByIdQuizIsSolveForLanguageMyData(Long userId){ return quizMapper.selectQuizIsSolveForLanguageMyData(userId);}
 }

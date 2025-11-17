@@ -67,8 +67,8 @@ public interface QuizMapper {
     public void updateSubmitResult(QuizResponseDTO quizResponseDTO);
 
 //    마이페이지 내가 푼 문제들
-    public List<QuizMyPageDTO> selectQuizIsSolveMyData(Long id);
+    public List<QuizMyPageDTO> selectQuizIsSolveMyData(Long userId);
 
-    public List<QuizMyPageDTO> selectQuizIsSolveForLanguageMyData(Long id);
+    public List<QuizMyPageDTO> selectQuizIsSolveForLanguageMyData(Long userId);
 
 }

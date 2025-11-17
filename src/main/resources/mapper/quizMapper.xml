@@ -211,6 +211,7 @@
 <!--                         마이페이지용 XML                       -->
     <select id="selectQuizIsSolveMyData" parameterType="Long" resultType="QuizMyPageDTO">
         SELECT
+            TBQ.ID as id,
             TBQ.QUIZ_TITLE as quizTitle,
             TBQ.QUIZ_DESCRIPTION as quizDescription,
             TBQ.QUIZ_CATEGORY as quizCategory,
@@ -224,7 +225,7 @@
             ON TBP.USER_ID = TBU.ID
         JOIN TBL_QUIZ TBQ
             ON TBP.QUIZ_ID = TBQ.ID AND TBU.ID = TBP.USER_ID
-        WHERE TBP.QUIZ_PERSONAL_IS_SOLVE > 0 AND TBU.ID = #{id}
+        WHERE TBP.QUIZ_PERSONAL_IS_SOLVE > 0 AND TBP.USER_ID = #{userId}
     </select>
 
     <select id="selectQuizIsSolveForLanguageMyData" parameterType="Long" resultType="QuizMyPageDTO">
@@ -236,6 +237,6 @@
             ON TBP.QUIZ_ID = TBQ.ID
         JOIN TBL_USER TBU
             ON TBP.QUIZ_ID = TBQ.ID AND TBU.ID = TBP.USER_ID
-        WHERE TBP.QUIZ_PERSONAL_IS_SOLVE > 0 AND TBU.ID = #{id}
+        WHERE TBP.QUIZ_PERSONAL_IS_SOLVE > 0 AND TBP.USER_ID = #{userId}
     </select>
 </mapper>

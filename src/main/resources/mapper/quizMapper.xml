@@ -225,7 +225,7 @@
             ON TBP.USER_ID = TBU.ID
         JOIN TBL_QUIZ TBQ
             ON TBP.QUIZ_ID = TBQ.ID AND TBU.ID = TBP.USER_ID
-        WHERE TBP.QUIZ_PERSONAL_IS_SOLVE > 0 AND TBP.USER_ID = #{userId}
+        WHERE TBP.USER_ID = #{userId}
     </select>
 
     <select id="selectQuizIsSolveForLanguageMyData" parameterType="Long" resultType="QuizMyPageDTO">

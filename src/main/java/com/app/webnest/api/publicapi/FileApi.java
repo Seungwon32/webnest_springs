@@ -23,72 +23,98 @@ import java.util.UUID;
 @RequiredArgsConstructor
 public class FileApi {
 
-    @Value("${file.upload.path}")
+    @Value("${file.upload.path}")      // 예: C:/upload/
     private String uploadPath;
 
     // 업로드
     @PostMapping("upload")
     @ResponseBody
     public List<String> upload(@RequestParam("uploadFile") List<MultipartFile> uploadFiles) throws IOException {
-        String rootPath = uploadPath + getPath();
-        log.info(rootPath);
+        // 예: 2025/11/18/
+        String datePath = getPath();
+
+        // 예: C:/upload/2025/11/18/
+        String rootPath = ensureTrailingSeparator(uploadPath) + datePath;
+        log.info("rootPath: {}", rootPath);
         log.info("upload files: {}", uploadFiles);
 
-        List<String> uuids = new ArrayList<>();
+        List<String> storedPaths = new ArrayList<>();
 
-        // 모든 파일의 정보를 가져온다..
-        File file = new File(rootPath);
-        if(!file.exists()){
-            file.mkdirs();
+        // 디렉터리 생성
+        File dir = new File(rootPath);
+        if (!dir.exists()) {
+            dir.mkdirs();
         }
 
-        for(int i = 0; i < uploadFiles.size(); i++){
-            // uuids를 생성
-            uuids.add(UUID.randomUUID().toString());
-            uploadFiles.get(i).transferTo(new File(rootPath + uuids.get(i) + "_" + uploadFiles.get(i).getOriginalFilename()));
+        for (MultipartFile uploadFile : uploadFiles) {
+            // uuid 생성
+            String uuid = UUID.randomUUID().toString();
+            String originalName = uploadFile.getOriginalFilename();
 
-            // 썸네일 생성
-            if(uploadFiles.get(i).getContentType().startsWith("image")){
-                FileOutputStream out = new FileOutputStream(new File(rootPath +"t_" + uuids.get(i) + "_" + uploadFiles.get(i).getOriginalFilename()));
-                Thumbnailator.createThumbnail(uploadFiles.get(i).getInputStream(), out, 100, 100);
-                out.close();
+            // 실제 파일명: uuid_원본이름
+            String savedName = uuid + "_" + originalName;
+
+            // 저장
+            File saveFile = new File(rootPath, savedName);
+            uploadFile.transferTo(saveFile);
+
+            // 썸네일 생성 (이미지인 경우만)
+            if (uploadFile.getContentType() != null &&
+                    uploadFile.getContentType().startsWith("image")) {
+
+                File thumbFile = new File(rootPath, "t_" + savedName);
+                try (FileOutputStream out = new FileOutputStream(thumbFile)) {
+                    Thumbnailator.createThumbnail(uploadFile.getInputStream(), out, 100, 100);
+                }
             }
+
+            // 프론트/DB에 저장할 상대 경로 (날짜 경로 + 파일명)
+            // 예: 2025/11/18/uuid_ara.jpg
+            String relativePath = datePath + savedName;
+            storedPaths.add(relativePath);
         }
 
-        log.info("upload path: {}", uuids);
-        return uuids;
+        log.info("uploaded file paths: {}", storedPaths);
+        return storedPaths;
     }
 
-    private String getPath(){
+    // 날짜 경로 생성
+    private String getPath() {
         return LocalDateTime.now().format(DateTimeFormatter.ofPattern("yyyy/MM/dd/"));
+    }
+
+    // 마지막에 / 붙이기
+    private String ensureTrailingSeparator(String path) {
+        if (path.endsWith("/") || path.endsWith("\\")) {
+            return path;
+        }
+        return path + "/";
     }
 
     // 로드
     @GetMapping("display")
     @ResponseBody
-    public byte[] display(String fileName) throws IOException {
-        log.info("Requested file: {}", fileName);
-        log.info("Upload path: {}", uploadPath);
-        
-        // fileName이 전체 경로를 포함하는 경우 (예: 2024/12/20/uuid_filename.jpg)
-        File file;
-        if (fileName.contains("/")) {
-            // 전체 경로로 파일 찾기
-            file = new File(uploadPath + fileName);
-        } else {
-            // 파일명만 있는 경우 uploadPath에서 직접 찾기
-            file = new File(uploadPath, fileName);
+    public byte[] display(@RequestParam String fileName) throws IOException {
+        // 기본 루트 경로 (ex. C:/upload/)
+        String basePath = ensureTrailingSeparator(uploadPath);
+
+        // fileName 앞에 / 있으면 제거
+        while (fileName.startsWith("/") || fileName.startsWith("\\")) {
+            fileName = fileName.substring(1);
         }
-        
+
+        // 최종 파일 객체 (ex. C:/upload/2025/11/18/uuid_ara.jpg)
+        File file = new File(basePath, fileName);
+
+        log.info("Requested file: {}", fileName);
         log.info("Full file path: {}", file.getAbsolutePath());
         log.info("File exists: {}", file.exists());
-        
+
         if (!file.exists()) {
             log.error("File not found: {}", file.getAbsolutePath());
             throw new IOException("File not found: " + fileName);
         }
-        
+
         return FileCopyUtils.copyToByteArray(file);
     }
 }
-

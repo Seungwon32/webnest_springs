@@ -98,7 +98,9 @@
     <update id="update" parameterType="UserVO">
         UPDATE TBL_USER
         SET
+        <if test="userPassword != null and userPassword != ''">
         USER_PASSWORD = #{userPassword},
+        </if>
         USER_THUMBNAIL_URL = #{userThumbnailUrl},
         USER_THUMBNAIL_NAME = #{userThumbnailName},
         USER_BIRTHDAY = #{userBirthday},

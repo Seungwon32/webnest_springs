@@ -68,7 +68,7 @@ public class QuizServiceImpl implements QuizService {
          return quizDAO.updateIsBookmark(quizResponseDTO);
         }
     @Override
-    public Integer isSolved(QuizResponseDTO quizResponseDTO) {
+    public boolean isSolved(QuizResponseDTO quizResponseDTO) {
         return quizDAO.updateIsSolve(quizResponseDTO);
     }
     @Override

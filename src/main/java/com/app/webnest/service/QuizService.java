@@ -45,7 +45,7 @@ public interface QuizService {
     public Integer isBookmarked(QuizResponseDTO quizResponseDTO);
 
 //    해당퀴즈 해결여부
-    public Integer isSolved(QuizResponseDTO quizResponseDTO );
+    public boolean isSolved(QuizResponseDTO quizResponseDTO );
 
 //    회원탈퇴시 데이터삭제
     public void deleteQuizPersonal(Long id);

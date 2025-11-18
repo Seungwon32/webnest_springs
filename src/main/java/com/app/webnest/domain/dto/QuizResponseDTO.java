@@ -12,6 +12,7 @@ public class QuizResponseDTO {
     private Long quizId;
     private Long userId;
     private String quizSubmitCode;
+    private String quizSubmitResultCode;
     private String quizSubmitResult;
     private Date quizSubmitCreateAt;
     private String className;

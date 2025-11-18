@@ -23,8 +23,6 @@ import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.*;
 
-import javax.script.ScriptEngine;
-import javax.script.ScriptEngineManager;
 import javax.tools.JavaCompiler;
 import javax.tools.ToolProvider;
 import java.util.ArrayList;
@@ -137,7 +135,6 @@ public class QuizApi {
             newPersonalVO.setUserId(userId);
             newPersonalVO.setQuizId(quizId);
             newPersonalVO.setQuizPersonalIsBookmark(1);
-            newPersonalVO.setQuizPersonalIsSolve(0);
             quizService.saveQuizPersonal(newPersonalVO);
             log.info("SavedgetId: {}",newPersonalVO.getId());
         }
@@ -157,9 +154,9 @@ public class QuizApi {
         Long findUserId = quizResponseDTO.getUserId();
 
         QuizVO findQuiz = quizService.findQuizById(findQuizId);
-        QuizPersonalVO quizPersonalVO = new QuizPersonalVO();
-        quizPersonalVO.setUserId(findUserId);
-        quizPersonalVO.setQuizId(findQuizId);
+        log.info("findQuiz: {}", findQuiz);
+        quizResponseDTO.setQuizId(findQuizId);
+        quizResponseDTO.setUserId(findUserId);
 
 
         quizDatas.put("findQuiz", findQuiz);
@@ -181,10 +178,13 @@ public class QuizApi {
         Long findUserId = quizResponseDTO.getUserId();
         Long findQuizId = quizResponseDTO.getQuizId();
         String userCode = quizResponseDTO.getQuizSubmitCode();
+        String userResultCode = quizResponseDTO.getQuizSubmitResultCode();
 
-        log.info("finduserCode: {}", userCode);
-        log.info("findUserId: {}",findUserId);
-        log.info("findQuizId: {}",findQuizId);
+//        log.info("submitCode: {}", userResultCode);
+//        log.info("finduserCode: {}", userCode);
+//        log.info("findUserId: {}",findUserId);
+//        log.info("findQuizId: {}",findQuizId);
+
 
         QuizPersonalVO findQuizPersonalVO = new QuizPersonalVO();
         findQuizPersonalVO.setUserId(findUserId);
@@ -195,7 +195,10 @@ public class QuizApi {
 
         dto.setUserId(findUserId);
         dto.setQuizId(findQuizId);
-        dto.setQuizSubmitCode(userCode);
+        dto.setQuizSubmitCode(userResultCode);
+
+
+
 //        서브밋 테이블에 추가해야함
         quizService.saveQuizSubmit(dto);
         quizService.modifySubmitResult(dto);
@@ -338,16 +341,22 @@ public class QuizApi {
         quizService.saveQuizSubmit(dto);
         quizService.modifySubmitResult(dto);
 
+        log.info("findUserId {}", findUserId);
+        log.info("findQuizId {}", findQuizId);
+        log.info("findCode: {}", findCode);
         Long findPersonalId = quizService.findQuizPersonalById(dto);
         QuizPersonalVO findAllPersonalVO = quizService.findAllQuizPersonalById(findPersonalId);
         if(findPersonalId == null) {
             quizService.saveQuizPersonal(findQuizPersonalVO);
-            quizService.isSolved(dto);
+            boolean isSolve = quizService.isSolved(dto);
             userService.gainExp(findUserId, findQuizExp);
             return ResponseEntity.status(HttpStatus.OK).body(ApiResponseDTO.of("기댓값과 일치합니다!\n다른 문제도 도전해보세요!!",data));
         }
 
         if(findAllPersonalVO != null){
+            boolean isSolve = quizService.isSolved(dto);
+            log.info("isSolve {}", isSolve);
+            data.put("isSolved", isSolve);
             quizService.isSolved(dto);
             userService.gainExp(findUserId, findQuizExp);
             return ResponseEntity.status(HttpStatus.OK).body(ApiResponseDTO.of("기댓값과 일치합니다!\n다른 문제도 도전해보세요!!", data));

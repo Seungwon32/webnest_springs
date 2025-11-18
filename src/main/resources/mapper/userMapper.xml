@@ -2,7 +2,7 @@
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "https://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.app.webnest.mapper.UserMapper">
     <select id="select" parameterType="Long" resultType="UserVO">
-    SELECT
+        SELECT
         ID,
         USER_NAME,
         USER_BIRTHDAY,
@@ -15,8 +15,8 @@
         USER_THUMBNAIL_NAME,
         USER_THUMBNAIL_URL,
         USER_PROVIDER
-    FROM TBL_USER
-    WHERE ID = #{id}
+        FROM TBL_USER
+        WHERE ID = #{id}
     </select>
 
     <select id="selectIdByUserEmail" parameterType="String" resultType="Long">
@@ -29,75 +29,75 @@
         SELECT ID
         FROM TBL_USER
         WHERE
-            USER_NAME = #{userName} AND USER_EMAIL = #{userEmail}
-                AND USER_PHONE = #{userPhone} AND USER_PROVIDER = 'LOCAL'
+        USER_NAME = #{userName} AND USER_EMAIL = #{userEmail}
+        AND USER_PHONE = #{userPhone} AND USER_PROVIDER = 'LOCAL'
     </select>
 
     <select id="selectAll" resultType="UserVO">
-    SELECT
-      ID,
-      USER_NAME,
-      USER_BIRTHDAY,
-      USER_EMAIL,
-      USER_PHONE,
-      USER_EXP,
-      USER_LEVEL,
-      USER_PASSWORD,
-      USER_NICKNAME,
-      USER_THUMBNAIL_NAME,
-      USER_THUMBNAIL_URL,
-      USER_PROVIDER
-    FROM TBL_USER
+        SELECT
+        ID,
+        USER_NAME,
+        USER_BIRTHDAY,
+        USER_EMAIL,
+        USER_PHONE,
+        USER_EXP,
+        USER_LEVEL,
+        USER_PASSWORD,
+        USER_NICKNAME,
+        USER_THUMBNAIL_NAME,
+        USER_THUMBNAIL_URL,
+        USER_PROVIDER
+        FROM TBL_USER
     </select>
 
     <select id="selectEmailByNameAndPhone" parameterType="UserVO" resultType="String">
         SELECT
-            USER_EMAIL
+        USER_EMAIL
         FROM
-            TBL_USER
+        TBL_USER
         WHERE
-            USER_NAME = #{userName} AND USER_PHONE = #{userPhone} AND USER_PROVIDER = 'LOCAL'
+        USER_NAME = #{userName} AND USER_PHONE = #{userPhone} AND USER_PROVIDER = 'LOCAL'
     </select>
 
     <select id="existsByUserEmail" parameterType="String" resultType="_boolean">
-    SELECT
+        SELECT
         CASE
         WHEN COUNT(ID) > 0 THEN 1 ELSE 0
         END
-    FROM TBL_USER
-    WHERE USER_EMAIL = #{userEmail}
+        FROM TBL_USER
+        WHERE USER_EMAIL = #{userEmail}
     </select>
 
     <insert id="insert" parameterType="UserVO">
-    INSERT INTO TBL_USER (
-      ID,
-      USER_NAME,
-      USER_BIRTHDAY,
-      USER_EMAIL,
-      USER_PHONE,
-      USER_PASSWORD,
-      USER_NICKNAME,
-      USER_PROVIDER,
-      USER_THUMBNAIL_NAME,
-      USER_THUMBNAIL_URL
-    )
-    VALUES (
-      SEQ_USER.NEXTVAL,
-      #{userName},
-      #{userBirthday},
-      #{userEmail},
-      #{userPhone},
-      #{userPassword},
-      #{userNickname},
-      #{userProvider},
-      #{userThumbnailName},
-      #{userThumbnailUrl}
-    )
+        INSERT INTO TBL_USER (
+        ID,
+        USER_NAME,
+        USER_BIRTHDAY,
+        USER_EMAIL,
+        USER_PHONE,
+        USER_PASSWORD,
+        USER_NICKNAME,
+        USER_PROVIDER,
+        USER_THUMBNAIL_NAME,
+        USER_THUMBNAIL_URL
+        )
+        VALUES (
+        SEQ_USER.NEXTVAL,
+        #{userName},
+        #{userBirthday},
+        #{userEmail},
+        #{userPhone},
+        #{userPassword},
+        #{userNickname},
+        #{userProvider},
+        #{userThumbnailName},
+        #{userThumbnailUrl}
+        )
     </insert>
 
     <update id="update" parameterType="UserVO">
-    UPDATE TBL_USER
-    SET
+        UPDATE TBL_USER
+        SET
         USER_PASSWORD = #{userPassword},
         USER_THUMBNAIL_URL = #{userThumbnailUrl},
         USER_THUMBNAIL_NAME = #{userThumbnailName},
@@ -105,30 +105,30 @@
         USER_NAME = #{userName},
         USER_NICKNAME = #{userNickname},
         USER_PHONE = #{userPhone}
-    WHERE ID = #{id}
+        WHERE ID = #{id}
     </update>
 
     <update id="updateExp" parameterType="map">
-    UPDATE TBL_USER
+        UPDATE TBL_USER
         SET USER_EXP = #{gain}
-    WHERE ID = #{id}
+        WHERE ID = #{id}
     </update>
 
     <update id="updateLevel" parameterType="map">
-    UPDATE TBL_USER
+        UPDATE TBL_USER
         SET USER_Level = #{level}
-    WHERE ID = #{id}
+        WHERE ID = #{id}
     </update>
 
     <delete id="delete" parameterType="Long">
-    DELETE FROM TBL_USER
-    WHERE ID = #{id}
+        DELETE FROM TBL_USER
+        WHERE ID = #{id}
     </delete>
 
     <update id="updateUserEXPByGameResult" parameterType="GameJoinDTO">
         UPDATE TBL_USER
-        SET USER_EXP = #{userEXP}
-        WHERE ID = #{id}
+        SET USER_EXP = #{userExp}
+        WHERE USER_ID = #{userId}
     </update>
 
 </mapper>

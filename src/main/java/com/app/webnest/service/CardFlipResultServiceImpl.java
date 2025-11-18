@@ -76,83 +76,62 @@ public class CardFlipResultServiceImpl implements CardFlipResultService {
             // 게임방의 플레이어 정보 조회
             List<GameJoinDTO> players = gameJoinService.getPlayers(gameRoomId);
             
-            // 완료한 사용자 찾기
-            GameJoinDTO completedPlayer = players.stream()
-                    .filter(p -> p.getUserId().equals(userId))
+            // 순위에 따라 경험치 차등 지급
+            int rank = allResults.stream()
+                    .filter(r -> r.getUserId().equals(userId))
                     .findFirst()
-                    .orElse(null);
+                    .map(r -> r.getRankInRoom() != null ? r.getRankInRoom() : 999)
+                    .orElse(999);
             
-            if (completedPlayer != null) {
-                // 순위에 따라 경험치 차등 지급
-                int rank = allResults.stream()
+            // 순위별 경험치: 1등 200, 2등 150, 3등 100, 그 외 50
+            int expGain = 50; // 기본 경험치
+            if (rank == 1) {
+                expGain = 200;
+            } else if (rank == 2) {
+                expGain = 150;
+            } else if (rank == 3) {
+                expGain = 100;
+            }
+            
+            // 경험치 추가 - gainExp 메서드를 사용하여 체크 제약조건 위반 방지
+            // gainExp는 경험치를 0-99 범위로 제한하고 레벨도 함께 업데이트합니다
+            userService.gainExp(userId, expGain);
+            
+            log.info("경험치 추가 완료 - userId: {}, rank: {}, expGain: {}", 
+                    userId, rank, expGain);
+            
+            // 5. 저장된 결과 조회 (삭제 전에 조회해야 함)
+            CardFlipResultDTO savedResultDTO = null;
+            CardFlipResultVO queryVO = new CardFlipResultVO();
+            queryVO.setUserId(userId);
+            queryVO.setGameRoomId(gameRoomId);
+            Optional<CardFlipResultVO> savedResult = cardFlipResultDAO.findByUserIdAndGameRoomId(queryVO);
+            if (savedResult.isPresent()) {
+                // DTO로 변환하여 반환 (사용자 정보는 전체 조회로 가져와야 함)
+                List<CardFlipResultDTO> results = cardFlipResultDAO.findAllByGameRoomId(gameRoomId);
+                savedResultDTO = results.stream()
                         .filter(r -> r.getUserId().equals(userId))
                         .findFirst()
-                        .map(r -> r.getRankInRoom() != null ? r.getRankInRoom() : 999)
-                        .orElse(999);
-                
-                // 순위별 경험치: 1등 200, 2등 150, 3등 100, 그 외 50
-                int expGain = 50; // 기본 경험치
-                if (rank == 1) {
-                    expGain = 200;
-                } else if (rank == 2) {
-                    expGain = 150;
-                } else if (rank == 3) {
-                    expGain = 100;
-                }
-                
-                // 경험치 추가 (기존 경험치 + 획득 경험치)
-                int currentExp = completedPlayer.getUserExp() != null ? completedPlayer.getUserExp() : 0;
-                int newExp = currentExp + expGain;
-                completedPlayer.setUserExp(newExp);
-                
-                // userMapper.xml의 updateUserEXPByGameResult가 #{id}와 #{userEXP}를 사용하므로 설정
-                // 1. id를 userId로 설정 (TBL_USER의 ID는 userId)
-                completedPlayer.setId(completedPlayer.getUserId());
-                
-                // 2. userMapper.xml이 #{userEXP}를 사용하므로 getUserEXP() 메서드가 필요
-                // GameJoinDTO에 userEXP 필드를 추가하거나 getUserEXP() 메서드를 추가해야 함
-                // 임시로 userExp를 사용하도록 시도 (MyBatis가 자동으로 매핑하지 못할 수 있음)
-                userService.modifyUserEXPByGameResult(completedPlayer);
-                
-                log.info("경험치 추가 완료 - userId: {}, rank: {}, expGain: {}, totalExp: {}", 
-                        userId, rank, expGain, completedPlayer.getUserExp());
-                
-                // 5. 저장된 결과 조회 (삭제 전에 조회해야 함)
-                CardFlipResultDTO savedResultDTO = null;
-                CardFlipResultVO queryVO = new CardFlipResultVO();
-                queryVO.setUserId(userId);
-                queryVO.setGameRoomId(gameRoomId);
-                Optional<CardFlipResultVO> savedResult = cardFlipResultDAO.findByUserIdAndGameRoomId(queryVO);
-                if (savedResult.isPresent()) {
-                    // DTO로 변환하여 반환 (사용자 정보는 전체 조회로 가져와야 함)
-                    List<CardFlipResultDTO> results = cardFlipResultDAO.findAllByGameRoomId(gameRoomId);
-                    savedResultDTO = results.stream()
-                            .filter(r -> r.getUserId().equals(userId))
-                            .findFirst()
-                            .orElse(null);
-                }
-                
-                // 6. 게임 종료 확인: 모든 플레이어가 게임을 완료했는지 확인
-                int totalPlayers = players.size();
-                int completedPlayers = allResults.size(); // 완료한 플레이어 수 (matchedPairs == 10인 플레이어)
-                
-                log.info("게임 완료 상태 확인 - gameRoomId: {}, totalPlayers: {}, completedPlayers: {}", 
-                        gameRoomId, totalPlayers, completedPlayers);
-                
-                // 모든 플레이어가 게임을 완료했으면 기록 삭제
-                if (completedPlayers >= totalPlayers) {
-                    log.info("모든 플레이어 게임 완료 - 게임방 기록 삭제 시작 - gameRoomId: {}", 
-                            gameRoomId);
-                    cardFlipResultDAO.deleteAllByGameRoomId(gameRoomId);
-                    log.info("게임방 기록 삭제 완료 - gameRoomId: {}", gameRoomId);
-                }
-                
-                // 저장된 결과 반환 (삭제 전에 조회한 결과)
-                return savedResultDTO;
-            } else {
-                log.warn("완료한 플레이어를 찾을 수 없음 - userId: {}, gameRoomId: {}", 
-                        userId, gameRoomId);
+                        .orElse(null);
             }
+            
+            // 6. 게임 종료 확인: 모든 플레이어가 게임을 완료했는지 확인
+            int totalPlayers = players.size();
+            int completedPlayers = allResults.size(); // 완료한 플레이어 수 (matchedPairs == 10인 플레이어)
+            
+            log.info("게임 완료 상태 확인 - gameRoomId: {}, totalPlayers: {}, completedPlayers: {}", 
+                    gameRoomId, totalPlayers, completedPlayers);
+            
+            // 모든 플레이어가 게임을 완료했으면 기록 삭제
+            if (completedPlayers >= totalPlayers) {
+                log.info("모든 플레이어 게임 완료 - 게임방 기록 삭제 시작 - gameRoomId: {}", 
+                        gameRoomId);
+                cardFlipResultDAO.deleteAllByGameRoomId(gameRoomId);
+                log.info("게임방 기록 삭제 완료 - gameRoomId: {}", gameRoomId);
+            }
+            
+            // 저장된 결과 반환 (삭제 전에 조회한 결과)
+            return savedResultDTO;
         }
 
         // 경험치를 지급하지 않은 경우에도 저장된 결과 조회하여 반환

@@ -16,7 +16,7 @@ public class CommentDTO {
     private String userNickname;
     private String postType;
 
-
+    private String userThumbnailName;
 
     private boolean liked;
     private int likeCount;

@@ -17,7 +17,7 @@ public class FollowDTO {
     private String userThumbnailUrl;
     private Integer userLevel;
     private String userEmail;
-
+    private String userThumbnailName; //
     private String presenceStatus;
     
 }

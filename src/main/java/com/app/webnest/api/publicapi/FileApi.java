@@ -25,13 +25,11 @@ public class FileApi {
 
     // 예: C:/upload/
     private String uploadPath;
-
     // 업로드
     @PostMapping("upload")
     @ResponseBody
     public List<String> upload(@RequestParam("uploadFile") List<MultipartFile> uploadFiles) throws IOException {
         String rootPath = "C:/upload/" + getPath();
-
 
         List<String> uuids = new ArrayList<>();
 

@@ -3,8 +3,8 @@ package com.app.webnest.exception;
 import lombok.NoArgsConstructor;
 
 @NoArgsConstructor
-public class LastWordException extends RuntimeException {
-    public LastWordException(String message) {
+public class WordAiException extends RuntimeException {
+    public WordAiException(String message) {
         super(message);
     }
 }

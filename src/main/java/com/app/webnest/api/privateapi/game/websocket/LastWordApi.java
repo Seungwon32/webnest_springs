@@ -7,7 +7,9 @@ import com.app.webnest.domain.vo.GameJoinVO;
 import com.app.webnest.exception.LastWordException;
 import com.app.webnest.service.GameJoinService;
 import com.app.webnest.service.LastWordService;
+import com.app.webnest.service.WordExplainService;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.messaging.handler.annotation.MessageMapping;
@@ -18,12 +20,14 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+@Slf4j
 @RestController
 @RequiredArgsConstructor
 public class LastWordApi {
     private final GameJoinService gameJoinService;
     private final SimpMessagingTemplate simpMessagingTemplate;
     private final LastWordService lastWordService;
+    private final WordExplainService wordExplainService;
 
     @MessageMapping("/game/last-word/ready")
     public ResponseEntity<ApiResponseDTO> updateReady(GameJoinVO gameJoinVO) {
@@ -139,7 +143,11 @@ public class LastWordApi {
             lastWordDTO.setGameRoomId(gameRoomId);
             lastWordDTO.setUserId(userId);
             lastWordDTO.setFocus(true);
-            lastWordDTO.setExplanation("");
+
+            String wordExplanation =  wordExplainService.getWordExplanation(word);
+            log.info("들어온 단어: {}, 찾은 설명 : {}", word, wordExplanation);
+
+            lastWordDTO.setExplanation(wordExplanation);
 
             // 단어 검증 및 브로드캐스트
             lastWordService.broadcastWord(lastWordDTO, gameRoomId);

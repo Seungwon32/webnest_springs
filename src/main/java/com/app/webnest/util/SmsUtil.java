@@ -39,7 +39,7 @@ public class SmsUtil {
         Message message = new Message();
         String toPhoneNumber = to.replace("\"", "");
 
-        message.setFrom("01046585892"); // 보내는 사람
+        message.setFrom("01025585892"); // 보내는 사람
         message.setTo(toPhoneNumber); // 받는 사람
         message.setText("[webnest]\n 아래의 인증코드를 입력해주세요\n" + verificationCode);
         SingleMessageSentResponse response = this.messageService.sendOne(new SingleMessageSendingRequest(message));
